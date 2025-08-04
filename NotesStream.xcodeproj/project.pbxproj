@@ -13,6 +13,7 @@
 		1C0E13922CDA627F00778C2E /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1C0E13912CDA627F00778C2E /* Base */; };
 		1C0E13942CDA628100778C2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C0E13932CDA628100778C2E /* Assets.xcassets */; };
 		1C0E13972CDA628100778C2E /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1C0E13962CDA628100778C2E /* Base */; };
+		1C13850E2E41204200471B5E /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C13850D2E41203600471B5E /* NoteTableViewCell.swift */; };
 		1C8895702CDCE77400107A8B /* LoginScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C88956F2CDCE77400107A8B /* LoginScreenView.swift */; };
 		1C8895722CDCE79F00107A8B /* RegisterScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8895712CDCE79F00107A8B /* RegisterScreenView.swift */; };
 		1C8895762CDCE8F400107A8B /* ProfileScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8895752CDCE8F400107A8B /* ProfileScreenView.swift */; };
@@ -35,6 +36,7 @@
 		1C0E13932CDA628100778C2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1C0E13962CDA628100778C2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C0E13982CDA628100778C2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C13850D2E41203600471B5E /* NoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
 		1C88956F2CDCE77400107A8B /* LoginScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenView.swift; sourceTree = "<group>"; };
 		1C8895712CDCE79F00107A8B /* RegisterScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterScreenView.swift; sourceTree = "<group>"; };
 		1C8895752CDCE8F400107A8B /* ProfileScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenView.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 		1C8895842CDCEEEE00107A8B /* Main Screen  */ = {
 			isa = PBXGroup;
 			children = (
+				1C13850D2E41203600471B5E /* NoteTableViewCell.swift */,
 				1C0E138E2CDA627F00778C2E /* ViewController.swift */,
 				1C8895822CDCEEE300107A8B /* MainScreenView.swift */,
 			);
@@ -274,6 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C8895802CDCEE9200107A8B /* AddNoteViewController.swift in Sources */,
+				1C13850E2E41204200471B5E /* NoteTableViewCell.swift in Sources */,
 				1C8895702CDCE77400107A8B /* LoginScreenView.swift in Sources */,
 				1C8895862CDCEF0F00107A8B /* LoginScreenViewController.swift in Sources */,
 				1C88957D2CDCEE7000107A8B /* RegisterViewController.swift in Sources */,
@@ -440,7 +444,7 @@
 				DEVELOPMENT_TEAM = L338LJ7FR6;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NotesApp/Info.plist;
+				INFOPLIST_FILE = NotesStream/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -451,7 +455,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = WA7.NotesApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonirusagara.NotesStream;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -470,7 +474,7 @@
 				DEVELOPMENT_TEAM = L338LJ7FR6;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NotesApp/Info.plist;
+				INFOPLIST_FILE = NotesStream/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -481,7 +485,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = WA7.NotesApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonirusagara.NotesStream;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
