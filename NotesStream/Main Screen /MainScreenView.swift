@@ -26,6 +26,7 @@ class MainScreenView: UIView {
     }
     
     
+    /// Initialize and style the notes view
     func setupTableViewNotes() {
         tableViewNotes = UITableView()
         tableViewNotes.register(NoteTableViewCell.self, forCellReuseIdentifier: "noteCell")
@@ -33,9 +34,11 @@ class MainScreenView: UIView {
         self.addSubview(tableViewNotes)
     }
     
+    /// Initialize the AddNote Button
     func setupAddNoteButton() {
         addNoteButton = UIButton(type: .system)
         addNoteButton.setTitle("+", for: .normal)
+        addNoteButton.setTitleColor(.white, for: .normal)
         addNoteButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 28)
         addNoteButton.backgroundColor = .systemBlue
         addNoteButton.layer.cornerRadius = 30

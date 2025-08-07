@@ -29,8 +29,18 @@ class ViewController: UIViewController, UITableViewDataSource {
         /// Assign data source to the notes table view
         mainScreenView.tableViewNotes.dataSource = self
         
+        /// Add action to the "Add Note" button to trigger navigation
+        mainScreenView.addNoteButton.addTarget(self, action: #selector(addNoteTapped), for: .touchUpInside)
+        
         /// Load mock notes using the mock service
         loadMockNotes()
+        
+    }
+    
+    /// Handles tap on the "+" button and navigates to the Add Note screen
+    @objc func addNoteTapped() {
+        let addNoteVC = AddNoteViewController()
+        navigationController?.pushViewController(addNoteVC, animated: true)
     }
 
     /// Fetch notes from the mock service
