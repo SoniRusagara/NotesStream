@@ -114,7 +114,7 @@ class RegisterScreenView: UIView {
 //        }
 
 
-    // MARK: - Constraints Setup
+// MARK: - Constraints Setup
         func initConstraints() {
             NSLayoutConstraint.activate([
                 // Name Label constraints

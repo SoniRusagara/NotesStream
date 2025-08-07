@@ -14,6 +14,7 @@
 		1C0E13942CDA628100778C2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C0E13932CDA628100778C2E /* Assets.xcassets */; };
 		1C0E13972CDA628100778C2E /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1C0E13962CDA628100778C2E /* Base */; };
 		1C13850E2E41204200471B5E /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C13850D2E41203600471B5E /* NoteTableViewCell.swift */; };
+		1C1385102E41367200471B5E /* APIConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C13850F2E41367200471B5E /* APIConfigs.swift */; };
 		1C8895702CDCE77400107A8B /* LoginScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C88956F2CDCE77400107A8B /* LoginScreenView.swift */; };
 		1C8895722CDCE79F00107A8B /* RegisterScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8895712CDCE79F00107A8B /* RegisterScreenView.swift */; };
 		1C8895762CDCE8F400107A8B /* ProfileScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8895752CDCE8F400107A8B /* ProfileScreenView.swift */; };
@@ -23,6 +24,7 @@
 		1C8895802CDCEE9200107A8B /* AddNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C88957F2CDCEE9200107A8B /* AddNoteViewController.swift */; };
 		1C8895832CDCEEE300107A8B /* MainScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8895822CDCEEE300107A8B /* MainScreenView.swift */; };
 		1C8895862CDCEF0F00107A8B /* LoginScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8895852CDCEF0F00107A8B /* LoginScreenViewController.swift */; };
+		1CB4A6E82E45120B00A9884A /* MockNotesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB4A6E72E45120B00A9884A /* MockNotesService.swift */; };
 		2FDD5FB7766F42ED24E5C8AE /* Pods_NotesStream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FE9C6F7ABFDFC61BF11C66 /* Pods_NotesStream.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +39,7 @@
 		1C0E13962CDA628100778C2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C0E13982CDA628100778C2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C13850D2E41203600471B5E /* NoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
+		1C13850F2E41367200471B5E /* APIConfigs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfigs.swift; sourceTree = "<group>"; };
 		1C88956F2CDCE77400107A8B /* LoginScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenView.swift; sourceTree = "<group>"; };
 		1C8895712CDCE79F00107A8B /* RegisterScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterScreenView.swift; sourceTree = "<group>"; };
 		1C8895752CDCE8F400107A8B /* ProfileScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenView.swift; sourceTree = "<group>"; };
@@ -46,6 +49,7 @@
 		1C88957F2CDCEE9200107A8B /* AddNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteViewController.swift; sourceTree = "<group>"; };
 		1C8895822CDCEEE300107A8B /* MainScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenView.swift; sourceTree = "<group>"; };
 		1C8895852CDCEF0F00107A8B /* LoginScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenViewController.swift; sourceTree = "<group>"; };
+		1CB4A6E72E45120B00A9884A /* MockNotesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotesService.swift; sourceTree = "<group>"; };
 		37FE9C6F7ABFDFC61BF11C66 /* Pods_NotesStream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotesStream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA61BF75A093D833D1C1A105 /* Pods-NotesStream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotesStream.debug.xcconfig"; path = "Target Support Files/Pods-NotesStream/Pods-NotesStream.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,6 +87,7 @@
 		1C0E13892CDA627F00778C2E /* NotesStream */ = {
 			isa = PBXGroup;
 			children = (
+				1C1385112E4136E800471B5E /* Utils */,
 				1C0E138A2CDA627F00778C2E /* AppDelegate.swift */,
 				1C0E138C2CDA627F00778C2E /* SceneDelegate.swift */,
 				1C8895842CDCEEEE00107A8B /* Main Screen  */,
@@ -96,6 +101,15 @@
 				1C8895812CDCEE9700107A8B /* Add Note Screen  */,
 			);
 			path = NotesStream;
+			sourceTree = "<group>";
+		};
+		1C1385112E4136E800471B5E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				1C13850F2E41367200471B5E /* APIConfigs.swift */,
+				1CB4A6E72E45120B00A9884A /* MockNotesService.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		1C88957B2CDCEE5300107A8B /* Profile Screen */ = {
@@ -278,12 +292,14 @@
 			files = (
 				1C8895802CDCEE9200107A8B /* AddNoteViewController.swift in Sources */,
 				1C13850E2E41204200471B5E /* NoteTableViewCell.swift in Sources */,
+				1CB4A6E82E45120B00A9884A /* MockNotesService.swift in Sources */,
 				1C8895702CDCE77400107A8B /* LoginScreenView.swift in Sources */,
 				1C8895862CDCEF0F00107A8B /* LoginScreenViewController.swift in Sources */,
 				1C88957D2CDCEE7000107A8B /* RegisterViewController.swift in Sources */,
 				1C0E138F2CDA627F00778C2E /* ViewController.swift in Sources */,
 				1C88957A2CDCEE4900107A8B /* ProfileScreenViewController.swift in Sources */,
 				1C0E138B2CDA627F00778C2E /* AppDelegate.swift in Sources */,
+				1C1385102E41367200471B5E /* APIConfigs.swift in Sources */,
 				1C8895782CDCEE1600107A8B /* AddNoteScreenView.swift in Sources */,
 				1C8895832CDCEEE300107A8B /* MainScreenView.swift in Sources */,
 				1C8895762CDCE8F400107A8B /* ProfileScreenView.swift in Sources */,

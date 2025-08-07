@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Custom UITableViewCell to display a note's title, preview, and date
 class NoteTableViewCell: UITableViewCell {
     var titleLabel: UILabel!
     var previewLabel: UILabel!
@@ -19,6 +20,7 @@ class NoteTableViewCell: UITableViewCell {
         initConstraints()
     }
     
+    /// Initialize and style the labels
     func setupLabels() {
         titleLabel = UILabel()
         titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
@@ -39,6 +41,7 @@ class NoteTableViewCell: UITableViewCell {
         contentView.addSubview(dateLabel)
     }
     
+    /// Apply Auto Layout constraints to position elements
     func initConstraints() {
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
