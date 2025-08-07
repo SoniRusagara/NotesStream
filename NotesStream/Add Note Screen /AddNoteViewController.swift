@@ -17,12 +17,25 @@ class AddNoteViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        guard let screenView = view as? AddNoteScreenView else { return }
+        
+        // Attach action methods
+        screenView.saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
+        screenView.shareButton.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
+        screenView.attachButton.addTarget(self, action: #selector(attachImageTapped), for: .touchUpInside)
     }
     
     @objc func attachImageTapped() {
-        // Show image picker here
+        // Show image picker logic here
+        print("Attach button tapped")
+    }
+    
+    @objc func saveTapped() {
+        print("Save button tapped")
+    }
+    
+    @objc func shareTapped() {
+        print("Share button tapped")
     }
 
 
