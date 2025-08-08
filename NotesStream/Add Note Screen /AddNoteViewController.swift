@@ -26,6 +26,8 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate{
     /// Manages the audio behavior of the app (e.g., mic access, playback mode).
     var recordingSession: AVAudioSession!
 
+    /// Variable to store created notes
+    var createdNote: Note?
 
     override func loadView() {
         view = AddNoteScreenView()
@@ -40,7 +42,17 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate{
         addNoteScreenView.attachButton.addTarget(self, action: #selector(attachTapped), for: .touchUpInside)
         addNoteScreenView.filesTableView.dataSource = self
         setupAudioSession()
+        
+        if let note = createdNote {
+            addNoteScreenView.noteTitle.text = note.title
+            addNoteScreenView.noteBody.text = note.content
+        }
 
+    }
+    
+    // Function that loads a created note
+    func loadNote(note: Note){
+        self.createdNote = note
     }
 
     // MARK: - Share Note

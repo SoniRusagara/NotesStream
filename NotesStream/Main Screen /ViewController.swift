@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 
 /// Main view controller for displaying the list of notes
-class ViewController: UIViewController, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
     
     /// The custom view containing the UI components
     let mainScreenView = MainScreenView()
@@ -26,8 +26,10 @@ class ViewController: UIViewController, UITableViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /// Assign data source to the notes table view
+        /// Assign data source & delegate to the notes table view
         mainScreenView.tableViewNotes.dataSource = self
+        mainScreenView.tableViewNotes.delegate = self
+
         
         /// Add action to the "Add Note" button to trigger navigation
         mainScreenView.addNoteButton.addTarget(self, action: #selector(addNoteTapped), for: .touchUpInside)
@@ -71,5 +73,13 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedNote = notes[indexPath.row]
+        let noteVC = AddNoteViewController()
+        noteVC.loadNote(note: selectedNote) 
+        navigationController?.pushViewController(noteVC, animated: true)
+    }
+
 }
 
