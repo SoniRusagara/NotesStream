@@ -9,6 +9,11 @@ import UIKit
 
 class AddNoteViewController: UIViewController {
     
+    /// Casts the main view to `AddNoteScreenView` for easy access to its subviews
+    var addNotesScreenView: AddNoteScreenView {
+        return self.view as! AddNoteScreenView
+    }
+    
     override func loadView() {
         view = AddNoteScreenView()
     }
@@ -35,7 +40,17 @@ class AddNoteViewController: UIViewController {
     }
     
     @objc func shareTapped() {
-        print("Share button tapped")
+        // Access title & body text
+        let titleText = addNotesScreenView.noteTitle.text ?? ""
+        let bodyText = addNotesScreenView.noteBody.text ?? ""
+        
+        // Combine them into a single string
+        let noteToShare = "\(titleText)\n\n\(bodyText)"
+        
+        // Create activity view controller
+        let activityViewController = UIActivityViewController(activityItems: [noteToShare], applicationActivities: nil)
+        
+        present(activityViewController, animated: true)
     }
 
 
