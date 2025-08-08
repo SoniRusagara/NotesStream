@@ -40,6 +40,8 @@ class ViewController: UIViewController, UITableViewDataSource {
     /// Handles tap on the "+" button and navigates to the Add Note screen
     @objc func addNoteTapped() {
         let addNoteVC = AddNoteViewController()
+        //let navVC = UINavigationController(rootViewController: addNoteVC)
+        //present(navVC, animated: true)
         navigationController?.pushViewController(addNoteVC, animated: true)
     }
 

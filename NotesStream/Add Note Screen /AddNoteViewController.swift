@@ -7,8 +7,10 @@
 
 import UIKit
 import UniformTypeIdentifiers
+import AVFoundation
 
-class AddNoteViewController: UIViewController{
+
+class AddNoteViewController: UIViewController, AVAudioRecorderDelegate{
     
     /// Casts the main view to `AddNoteScreenView` for easy access to its subviews
     var addNoteScreenView: AddNoteScreenView {
@@ -17,6 +19,13 @@ class AddNoteViewController: UIViewController{
 
     /// Store attached file URLs
     var attachedFiles: [URL] = []
+    
+    /// Responsible for handling the actual recording process (start, stop, save).
+    var audioRecorder: AVAudioRecorder?
+
+    /// Manages the audio behavior of the app (e.g., mic access, playback mode).
+    var recordingSession: AVAudioSession!
+
 
     override func loadView() {
         view = AddNoteScreenView()
@@ -30,6 +39,8 @@ class AddNoteViewController: UIViewController{
         addNoteScreenView.shareButton.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
         addNoteScreenView.attachButton.addTarget(self, action: #selector(attachTapped), for: .touchUpInside)
         addNoteScreenView.filesTableView.dataSource = self
+        setupAudioSession()
+
     }
 
     // MARK: - Share Note
@@ -48,6 +59,9 @@ class AddNoteViewController: UIViewController{
 
     // MARK: - Show Attachment Options
     @objc func attachTapped() {
+        // Prevent multiple alerts being shown at the same time
+        if presentedViewController != nil { return }
+        
         let picker = UIAlertController(title: "Add Attachment", message: nil, preferredStyle: .actionSheet)
 
         // Attach Photo
@@ -69,7 +83,7 @@ class AddNoteViewController: UIViewController{
         // Attach Audio
         let audio = UIAlertAction(title: "Audio", style: .default) { _ in
             print("Attach audio tapped")
-            // TODO: Audio picker or recorder
+            self.recordAudio()
         }
         audio.setValue(UIImage(systemName: "waveform"), forKey: "image")
         picker.addAction(audio)
@@ -129,6 +143,74 @@ extension AddNoteViewController: UIDocumentPickerDelegate {
         addNoteScreenView.filesTableView.reloadData()
 
     }
+    
+    /// Starts audio recording, saves the file locally, and adds it as an attachment
+    func recordAudio() {
+        // Generate a unique filename with .m4a extension
+        let filename = UUID().uuidString + ".m4a"
+        
+        // Get the app's documents directory path
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        
+        // Create the full file URL where the audio will be saved
+        let audioURL = documentsPath.appendingPathComponent(filename)
+
+        // Define the recording settings
+        let settings: [String: Any] = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),       // Use AAC format
+            AVSampleRateKey: 12000,                         // 12 kHz sample rate
+            AVNumberOfChannelsKey: 1,                       // Mono channel
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue // High-quality recording
+        ]
+
+        do {
+            // Initialize the recorder with the file URL and settings
+            audioRecorder = try AVAudioRecorder(url: audioURL, settings: settings)
+            audioRecorder?.delegate = self
+            
+            // Start recording
+            audioRecorder?.record()
+            print("🎙️ Recording started...")
+
+            // Automatically stop recording after 5 seconds 
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                self.audioRecorder?.stop()
+                print("🛑 Recording stopped")
+                
+                // Attach the recorded audio file to the note
+                self.addFileAttachment(from: audioURL)
+            }
+
+        } catch {
+            // If recording fails, log the error
+            print("❌ Failed to start recording: \(error)")
+        }
+    }
+
+    
+    /// Configures the app's audio session to allow recording and requests mic permission
+    func setupAudioSession() {
+        // Get the shared audio session instance
+        recordingSession = AVAudioSession.sharedInstance()
+        
+        do {
+            // Set the audio category to allow recording and playback
+            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setActive(true) // Activate the session
+            // Request permission to use the microphone
+            recordingSession.requestRecordPermission { allowed in
+                DispatchQueue.main.async {
+                    if !allowed {
+                        print("🎙️ Microphone permission denied.")
+                    }
+                }
+            }
+        } catch {
+            // Catch and report any errors in setting up the session
+            print("❌ Failed to setup audio session: \(error)")
+        }
+    }
+
 }
 
 // MARK: - TableView DataSource
