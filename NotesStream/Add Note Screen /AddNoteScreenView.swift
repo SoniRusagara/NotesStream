@@ -29,6 +29,9 @@ class AddNoteScreenView: UIView {
     // array to store multiple images per note 
     var attachedImages: [UIImage] = []
     
+    var filesTableView: UITableView!
+
+    
     override init(frame: CGRect) {
            super.init(frame: frame)
            
@@ -42,6 +45,8 @@ class AddNoteScreenView: UIView {
            setupSaveButton()
            setupShareButton()
            setupAttachButton()
+           setupFilesTableView()
+
            
            // Setup constraints
            initConstraints()
@@ -154,6 +159,18 @@ class AddNoteScreenView: UIView {
        self.addSubview(imagesCollectionView)
           
       }
+ 
+    /// Sets up the table view that displays attached files in a list
+    func setupFilesTableView() {
+        filesTableView = UITableView()
+        // Register a custom cell for showing file name + icon
+        filesTableView.register(FileTableViewCell.self, forCellReuseIdentifier: "fileCell")
+        // Auto layout setup
+        filesTableView.translatesAutoresizingMaskIntoConstraints = false
+        filesTableView.isScrollEnabled = false // makes it grow with content
+        self.addSubview(filesTableView) // Add to view hierarchy
+    }
+
 
     
     
@@ -163,38 +180,45 @@ class AddNoteScreenView: UIView {
     // MARK: Setting up Constraints
     func initConstraints() {
         NSLayoutConstraint.activate([
-            // Note Title at top
+            // Title text field at the top
             noteTitle.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 16),
             noteTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             noteTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 
-            // Save button top-right
+            // Save button aligned to top-right
             saveButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 16),
             saveButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 
-            // Share button next to Save
+            // Share button to the left of Save
             shareButton.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
             shareButton.trailingAnchor.constraint(equalTo: saveButton.leadingAnchor, constant: -16),
 
-            // Note Body below Title
+            // Body text view below the note title
             noteBody.topAnchor.constraint(equalTo: noteTitle.bottomAnchor, constant: 12),
             noteBody.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             noteBody.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             noteBody.heightAnchor.constraint(equalToConstant: 200),
 
-            // Image Collection below noteBody
+            // Image collection view below the note body
             imagesCollectionView.topAnchor.constraint(equalTo: noteBody.bottomAnchor, constant: 12),
             imagesCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             imagesCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             imagesCollectionView.heightAnchor.constraint(equalToConstant: 120),
 
-            // Attach button floating bottom-right
+            // 📄 File list table view below the image collection
+            filesTableView.topAnchor.constraint(equalTo: imagesCollectionView.bottomAnchor, constant: 12),
+            filesTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            filesTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            filesTableView.heightAnchor.constraint(equalToConstant: 150), // you can adjust this later
+
+            // 📎 Attach button at bottom-right, floating
             attachButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             attachButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             attachButton.widthAnchor.constraint(equalToConstant: 50),
-            attachButton.heightAnchor.constraint(equalToConstant: 50)
+            attachButton.heightAnchor.constraint(equalToConstant: 50),
         ])
     }
+
 
     
     
