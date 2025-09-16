@@ -21,6 +21,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func loadView() {
         view = mainScreenView
     }
+    
+    let headers: HTTPHeaders = [
+        "x-access-token": "dev-user-1",     // matches your Lambda temp auth
+        "Content-Type": "application/json"  // safe default
+    ]
 
     /// Setup view after it’s loaded
     override func viewDidLoad() {
@@ -29,13 +34,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         /// Assign data source & delegate to the notes table view
         mainScreenView.tableViewNotes.dataSource = self
         mainScreenView.tableViewNotes.delegate = self
+        /// Register the custom cell class so the table view can create/reuse cells with the "noteCell" identifier
+        mainScreenView.tableViewNotes.register(NoteTableViewCell.self, forCellReuseIdentifier: "noteCell")
 
         
         /// Add action to the "Add Note" button to trigger navigation
         mainScreenView.addNoteButton.addTarget(self, action: #selector(addNoteTapped), for: .touchUpInside)
         
         /// Load mock notes using the mock service
-        loadMockNotes()
+        //loadMockNotes()
+        
+        // fetch all notes when the main screen loads
+        fetchAllNotes()
         
     }
     
@@ -47,13 +57,115 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         navigationController?.pushViewController(addNoteVC, animated: true)
     }
 
-    /// Fetch notes from the mock service
-    func loadMockNotes() {
-        MockNotesService.shared.fetchNotes { notes in
-            self.notes = notes
-            self.mainScreenView.tableViewNotes.reloadData()
+        
+    //MARK: get all Notes...
+    func fetchAllNotes() {
+        // build the URL with the baseURL and the getall endpoint using URL() initializer
+        guard let url = URL(string: APIConfigs.getAllNotes) else {
+            print("❌ Invalid URL:", APIConfigs.getAllNotes)
+            return
+        }
+        
+        print("🌐 GET \(url.absoluteString)")
+
+        // use url to make a request with Alamofire & call responseData() method for JSON parsing
+        AF.request(url, method: .get, headers: headers).responseData { response in
+            //MARK: retrieving the status code, since it is an optional value we need to unwrap it when we use it
+            let status = response.response?.statusCode
+            print("🔎 HTTP status:", status.map(String.init) ?? "nil")
+            
+            switch response.result {
+            //MARK: there was no network error...
+            case .success(let data):
+                guard let uwStatusCode = status else {
+                    print("❔ No HTTP status from server")
+                    return
+                }
+                
+                switch uwStatusCode {
+                //MARK: the request was valid 200-level...
+                case 200...299:
+                    do {
+                        // Parse JSON data into Note array
+                        let fetchedNotes = try JSONDecoder().decode([Note].self, from: data)
+                        
+                        // Debug: counts + each note
+                        print("🧮 decoded notes:", fetchedNotes.count)
+                        
+                        // Update notes array and reload table view on main thread
+                        DispatchQueue.main.async {
+                            self.notes = fetchedNotes
+                            self.mainScreenView.tableViewNotes.reloadData()
+                            print("✅ table reloaded, rows:", self.notes.count)
+                        }
+                        
+                        print("Successfully fetched \(fetchedNotes.count) notes")
+                        
+                    } catch {
+                        print("❌ JSON decode error:", error)
+                        DispatchQueue.main.async {
+                            self.showErrorAlert(message: "Failed to load notes. Please try again.")
+                        }
+                    }
+                    
+                //MARK: the request was not valid 400-level...
+                case 400...499:
+                    if let errorString = String(data: data, encoding: .utf8) {
+                        print("Client error: \(errorString)")
+                    }
+                    
+                //MARK: probably a 500-level error...
+                default:
+                    if let errorString = String(data: data, encoding: .utf8) {
+                        print("Server error: \(errorString)")
+                    }
+                }
+                
+            //MARK: there was a network error...
+            case .failure(let error):
+                print("🌐 Network error:", error.localizedDescription)
+
+                if let af = error.asAFError {
+                    switch af {
+                    case .sessionTaskFailed(let underlying):
+                        if let urlErr = underlying as? URLError {
+                            print("🔧 URLError.code:", urlErr.code.rawValue, "(\(urlErr.code))")
+                        } else {
+                            print("🔧 Underlying error:", underlying)
+                        }
+                    default:
+                        print("🔧 AFError:", af)
+                    }
+                }
+
+                // Helpful to see *everything* Alamofire captured
+                debugPrint("🧾 Response dump:", response)
+
+                DispatchQueue.main.async {
+                    self.showErrorAlert(message: "Server is experiencing issues. Please try again later.")
+                }
+
+            }
         }
     }
+
+
+    
+    // MARK: - Helper method to show user-friendly error messages
+    func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        // Make sure we're on the main thread when presenting
+        if Thread.isMainThread {
+            present(alert, animated: true)
+        } else {
+            DispatchQueue.main.async {
+                self.present(alert, animated: true)
+            }
+        }
+    }
+    
     
     // MARK: - TableView DataSource Methods
     
@@ -82,4 +194,5 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 
 }
+
 

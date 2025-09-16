@@ -10,7 +10,7 @@ import UniformTypeIdentifiers
 import AVFoundation
 
 
-class AddNoteViewController: UIViewController, AVAudioRecorderDelegate{
+class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
     /// Casts the main view to `AddNoteScreenView` for easy access to its subviews
     var addNoteScreenView: AddNoteScreenView {
@@ -78,8 +78,12 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate{
 
         // Attach Photo
         let photo = UIAlertAction(title: "Photo", style: .default) { _ in
-            print("Attach photo tapped")
-            // TODO: Show image picker
+            //print("Attach photo tapped")
+            let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.delegate = self
+            self.present(imagePicker, animated: true)
+
         }
         photo.setValue(UIImage(systemName: "photo"), forKey: "image")
         picker.addAction(photo)
@@ -113,6 +117,15 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate{
 
         present(picker, animated: true)
     }
+    // MARK: - Image Picker
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+
+        if let image = info[.originalImage] as? UIImage {
+            addNoteScreenView.addImage(image)
+        }
+    }
+
 
     // MARK: - Show File Picker
     func presentFilePicker() {
@@ -122,6 +135,7 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate{
         present(picker, animated: true)
     }
 }
+
 
 // MARK: - UIDocumentPickerDelegate
 extension AddNoteViewController: UIDocumentPickerDelegate {
@@ -266,5 +280,28 @@ extension AddNoteViewController: UIDocumentInteractionControllerDelegate {
         return self
     }
 }
+
+extension AddNoteViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return addNoteScreenView.attachedImages.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "imageCell", for: indexPath)
+        let image = addNoteScreenView.attachedImages[indexPath.row]
+
+        let imageView = UIImageView(image: image)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.frame = cell.contentView.bounds
+
+        // Remove old views
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.contentView.addSubview(imageView)
+
+        return cell
+    }
+}
+
 
 
