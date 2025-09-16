@@ -1,4 +1,37 @@
-Pods/
-*.xcuserdatad
+# macOS
+.DS_Store
+
+# Xcode
+build/
 DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcactivitylog
+
+# Swift Package Manager
+.swiftpm/
+Packages/
+# If you prefer to pin deps, remove the next line so Package.resolved is tracked:
+Package.resolved
+
+# CocoaPods (if used)
+Pods/
 *.xcworkspace
+# For apps, keep Podfile.lock tracked (do NOT ignore it).
+
+# Carthage (if used)
+Carthage/Build/
+
+# Fastlane (if used)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+
+# Artifacts / archives
+*.ipa
+*.dSYM.zip
+
+# Local config / secrets
+Secrets.xcconfig
+*.local.json
+.env
