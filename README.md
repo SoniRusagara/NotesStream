@@ -2,8 +2,7 @@
 
 # iOS Notes App — NotesStream (AWS: API Gateway + Lambda + DynamoDB)
 
-An iOS notes app with an AWS serverless backend. Fast sync, offline-friendly, and instrumented for reliability. Includes an AI summarizer to shrink long notes and speed up review.
-
+An iOS notes app with an AWS serverless backend. Fast sync, offline-friendly, and instrumented for reliability. 
 **Highlight:** Scaled to **1k+ notes/user** with **<200 ms** sync; **99.9%** consistency in offline control–variant tests.
 
 ---
@@ -80,7 +79,7 @@ API Gateway routes → Lambda (`getall`, `post`, `delete`) → DynamoDB (`Notes`
 Cognito User Pool + API authorizer (JWT), pagination, validation, error budgets.
 
 **Phase 3 — AI & media (🎯):**
-Summarization (Bedrock/OpenAI), auto-tagging, voice notes (S3 + Transcribe), smart search.
+Future Work: Summarization (Bedrock/OpenAI), auto-tagging, voice notes (S3 + Transcribe), smart search.
 
 ---
 
