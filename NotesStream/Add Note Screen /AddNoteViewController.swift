@@ -63,12 +63,8 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
         let activityVC = UIActivityViewController(activityItems: [noteToShare], applicationActivities: nil)
         present(activityVC, animated: true)
     }
-
-    // MARK: - Save Note (placeholder)
-    @objc func saveTapped() {
-        print("Save button tapped")
-    }
-
+    
+    
     // MARK: - Show Attachment Options
     @objc func attachTapped() {
         // Prevent multiple alerts being shown at the same time
@@ -117,6 +113,18 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
 
         present(picker, animated: true)
     }
+    
+    // MARK: - Save Note (placeholder)
+    @objc func saveTapped() {
+        print("Save button tapped")
+    }
+    
+    //MARK: add a new contact call: add endpoint...
+    func addNoteToAPI(note: Note) {
+        
+    }
+    
+    
     // MARK: - Image Picker
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)

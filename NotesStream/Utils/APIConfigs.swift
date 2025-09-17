@@ -30,3 +30,4 @@ class APIConfigs {
     static var addNote:     String { baseNotesURL + "post" }
     static var deleteNotes: String { baseNotesURL + "delete" }
 }
+

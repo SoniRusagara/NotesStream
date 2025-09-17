@@ -31,6 +31,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // App title
+        self.title = "My Notes 📝"
+        
         /// Assign data source & delegate to the notes table view
         mainScreenView.tableViewNotes.dataSource = self
         mainScreenView.tableViewNotes.delegate = self
@@ -39,10 +42,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
         
         /// Add action to the "Add Note" button to trigger navigation
-        mainScreenView.addNoteButton.addTarget(self, action: #selector(addNoteTapped), for: .touchUpInside)
-        
-        /// Load mock notes using the mock service
-        //loadMockNotes()
+        mainScreenView.addNoteButton.addTarget(self, action: #selector(addNoteButtonTapped), for: .touchUpInside)
         
         // fetch all notes when the main screen loads
         fetchAllNotes()
@@ -50,12 +50,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     /// Handles tap on the "+" button and navigates to the Add Note screen
-    @objc func addNoteTapped() {
+    @objc func addNoteButtonTapped() {
         let addNoteVC = AddNoteViewController()
-        //let navVC = UINavigationController(rootViewController: addNoteVC)
-        //present(navVC, animated: true)
         navigationController?.pushViewController(addNoteVC, animated: true)
     }
+    
+    
 
         
     //MARK: get all Notes...
