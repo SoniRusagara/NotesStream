@@ -22,6 +22,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         view = mainScreenView
     }
     
+    // todo: centralize to API client
     let headers: HTTPHeaders = [
         "x-access-token": "dev-user-1",     // matches your Lambda temp auth
         "Content-Type": "application/json"  // safe default
@@ -46,6 +47,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // fetch all notes when the main screen loads
         fetchAllNotes()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(onNoteCreated(_:)), name: .noteCreated, object: nil)
         
     }
     
@@ -191,6 +194,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let noteVC = AddNoteViewController()
         noteVC.loadNote(note: selectedNote) 
         navigationController?.pushViewController(noteVC, animated: true)
+    }
+    
+    @objc private func onNoteCreated(_ n: Notification) {
+        guard let created = n.object as? Note else { return }
+
+        // Optimistic insert for instant UI
+        notes.insert(created, at: 0)
+        mainScreenView.tableViewNotes.reloadData()
+
+        // Background reconcile with server truth
+        fetchAllNotes()
     }
 
 }

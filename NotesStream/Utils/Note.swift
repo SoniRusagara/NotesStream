@@ -5,6 +5,8 @@
 //  Created by Soni Rusagara on 9/16/25.
 //
 
+import Foundation
+
 
 /// Data model representing a note
 /// Conforms to Codable for easy encoding/decoding from JSON
@@ -21,3 +23,8 @@ struct Note: Codable {
         self.createdAt = createdAt
     }
 }
+
+extension Notification.Name {
+    static let noteCreated = Notification.Name("noteCreated")
+}
+

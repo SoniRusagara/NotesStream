@@ -8,6 +8,7 @@
 import UIKit
 import UniformTypeIdentifiers
 import AVFoundation
+import Alamofire
 
 
 class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
@@ -19,6 +20,13 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
 
     /// Store attached file URLs
     var attachedFiles: [URL] = []
+    
+    let headers: HTTPHeaders = [
+        "x-access-token": "dev-user-1",     // temp auth → maps to userId
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    ]
+    
     
     /// Responsible for handling the actual recording process (start, stop, save).
     var audioRecorder: AVAudioRecorder?
@@ -114,15 +122,111 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
         present(picker, animated: true)
     }
     
-    // MARK: - Save Note (placeholder)
+    // MARK: - Save Note Button
     @objc func saveTapped() {
-        print("Save button tapped")
+        let title = addNoteScreenView.noteTitle.text?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let body  = addNoteScreenView.noteBody.text?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        guard !title.isEmpty || !body.isEmpty else {
+            showAlert("Please enter a title or body")
+            return
+        }
+
+        setSaving(true)
+
+        addNoteToAPI(title: title, content: body) { result in
+            DispatchQueue.main.async {
+                self.setSaving(false)
+                switch result {
+                case .success(let createdNote):
+                    // 1) Let the list know a note was created (optimistic refresh there)
+                    NotificationCenter.default.post(name: .noteCreated, object: createdNote)
+
+                    // 2) Keep this screen open; store the created note
+                    self.createdNote = createdNote
+
+                    // 3) Let the user choose what to do next
+                    let alert = UIAlertController(
+                        title: "Saved ✅",
+                        message: "Your note was saved. Keep editing or view the list?",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Keep Editing", style: .default))
+                    alert.addAction(UIAlertAction(title: "Go to List", style: .default, handler: { _ in
+                        self.navigationController?.popViewController(animated: true)
+                    }))
+                    self.present(alert, animated: true)
+
+                case .failure(let err):
+                    print("❌ Add note failed:", err)
+                    self.showAlert("Failed to save. Please try again.")
+                }
+            }
+        }
     }
+
     
-    //MARK: add a new contact call: add endpoint...
-    func addNoteToAPI(note: Note) {
-        
+    
+    // MARK: add a new Note via POST /api/note/post
+    func addNoteToAPI(title: String, content: String,
+                      completion: @escaping (Result<Note, Error>) -> Void) {
+        guard let url = URL(string: APIConfigs.addNote) else {
+            print("❌ Invalid URL:", APIConfigs.addNote)
+            completion(.failure(NSError(domain: "BadURL", code: -1)))
+            return
+        }
+
+        print("🌐 POST \(url.absoluteString)")
+
+        let payload: [String: String] = [
+            "title": title,
+            "content": content
+        ]
+
+        AF.request(url, method: .post, parameters: payload, encoding: JSONEncoding.default, headers: headers)
+          .responseData { response in
+            let status = response.response?.statusCode
+            print("🔎 HTTP status:", status.map(String.init) ?? "nil")
+
+            switch response.result {
+            case .success(let data):
+                guard let code = status else {
+                    completion(.failure(NSError(domain: "NoStatus", code: -1)))
+                    return
+                }
+                switch code {
+                case 200...299:
+                    do {
+                        let created = try JSONDecoder().decode(Note.self, from: data)
+                        print("✅ Created note:", created)
+                        completion(.success(created))
+                    } catch {
+                        print("❌ JSON decode error:", error)
+                        if let raw = String(data: data, encoding: .utf8) { print("🧾 Raw body:", raw) }
+                        completion(.failure(error))
+                    }
+
+                case 400...499:
+                    let body = String(data: data, encoding: .utf8) ?? ""
+                    print("🙅‍♀️ Client error:", body)
+                    completion(.failure(NSError(domain: "ClientError", code: code, userInfo: ["body": body])))
+
+                default:
+                    let body = String(data: data, encoding: .utf8) ?? ""
+                    print("💥 Server error:", body)
+                    completion(.failure(NSError(domain: "ServerError", code: code, userInfo: ["body": body])))
+                }
+
+            case .failure(let error):
+                print("🌐 Network error:", error.localizedDescription)
+                completion(.failure(error))
+            }
+          }
     }
+
+
     
     
     // MARK: - Image Picker
@@ -141,6 +245,17 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
         picker.delegate = self
         picker.allowsMultipleSelection = false
         present(picker, animated: true)
+    }
+    
+    private func setSaving(_ saving: Bool) {
+        addNoteScreenView.saveButton.isEnabled = !saving
+        addNoteScreenView.saveButton.alpha = saving ? 0.5 : 1.0
+    }
+
+    private func showAlert(_ msg: String) {
+        let a = UIAlertController(title: "Oops", message: msg, preferredStyle: .alert)
+        a.addAction(UIAlertAction(title: "OK", style: .default))
+        present(a, animated: true)
     }
 }
 
