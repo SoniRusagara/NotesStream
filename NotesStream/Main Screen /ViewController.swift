@@ -48,6 +48,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // fetch all notes when the main screen loads
         fetchAllNotes()
         
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(onNoteDeleted(_:)),
+            name: .noteDeleted,
+            object: nil)
+
+        
         NotificationCenter.default.addObserver(self, selector: #selector(onNoteCreated(_:)), name: .noteCreated, object: nil)
         
     }
@@ -206,6 +212,21 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // Background reconcile with server truth
         fetchAllNotes()
     }
+    
+    @objc private func onNoteDeleted(_ n: Notification) {
+        guard let id = n.object as? String else { return }
+
+        if let row = notes.firstIndex(where: { $0.id == id }) {
+            notes.remove(at: row)
+            mainScreenView.tableViewNotes.performBatchUpdates({
+                mainScreenView.tableViewNotes.deleteRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
+            }, completion: nil)
+        } else {
+            // If we didn’t have it locally (or indices shifted), reconcile from server
+            fetchAllNotes()
+        }
+    }
+
 
 }
 

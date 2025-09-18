@@ -46,7 +46,7 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
         
         // Attach action methods to buttons
         addNoteScreenView.saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
-        addNoteScreenView.shareButton.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
+        addNoteScreenView.moreButton.addTarget(self, action: #selector(moreTapped), for: .touchUpInside)
         addNoteScreenView.attachButton.addTarget(self, action: #selector(attachTapped), for: .touchUpInside)
         addNoteScreenView.filesTableView.dataSource = self
         setupAudioSession()
@@ -122,6 +122,37 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
         present(picker, animated: true)
     }
     
+    // MARK: - More (3-dots) Menu
+    @objc func moreTapped() {
+        // Prevents stacking multiple sheets
+        if presentedViewController != nil { return }
+
+        let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        // Share option → reusing my existing shareTapped()
+        sheet.addAction(UIAlertAction(title: "Share", style: .default) { _ in
+            self.shareTapped()
+        })
+
+        // Delete option → goes to a confirm step (next section)
+        sheet.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            self.confirmDelete()
+        })
+
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        // iPad safety to avoid a crash
+        if let pop = sheet.popoverPresentationController {
+            pop.sourceView = addNoteScreenView.moreButton
+            pop.sourceRect = addNoteScreenView.moreButton.bounds
+        }
+
+        present(sheet, animated: true)
+    }
+    
+    
+
+    
     // MARK: - Save Note Button
     @objc func saveTapped() {
         let title = addNoteScreenView.noteTitle.text?
@@ -166,6 +197,8 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
             }
         }
     }
+    
+    
 
     
     
@@ -225,9 +258,105 @@ class AddNoteViewController: UIViewController, AVAudioRecorderDelegate, UIImageP
             }
           }
     }
-
-
     
+    // MARK: - Confirm, then delete
+    func confirmDelete() {
+        // Need an id for deletion
+        guard let id = createdNote?.id, !id.isEmpty else {
+            showAlert("Save the note first before deleting.")
+            return
+        }
+
+        let alert = UIAlertController(
+            title: "Delete Note?",
+            message: "This cannot be undone.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            self.deleteCurrentNote(id: id)
+        })
+        present(alert, animated: true)
+    }
+    
+    @objc func deleteCurrentNote(id: String) {
+        setSaving(true)
+
+        deleteNoteFromAPI(id: id) { result in
+            DispatchQueue.main.async {
+                self.setSaving(false)
+                switch result {
+                case .success:
+                    // Tell the list screen to remove this note
+                    NotificationCenter.default.post(name: .noteDeleted, object: id)
+
+                    // Show confirmation, then pop back to the list
+                    let a = UIAlertController(title: "Deleted", message: "Your note was deleted.", preferredStyle: .alert)
+                    a.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                        self.navigationController?.popViewController(animated: true)
+                    })
+                    self.present(a, animated: true)
+
+                case .failure(let err):
+                    print("❌ Delete failed:", err)
+                    self.showAlert("Failed to delete. Please try again.")
+                }
+            }
+        }
+    }
+    
+    
+    // MARK: delete a Note via POST /api/note/delete
+    func deleteNoteFromAPI(id: String,
+                           completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: APIConfigs.deleteNote) else {
+            print("❌ Invalid URL")
+            completion(.failure(NSError(domain: "BadURL", code: -1)))
+            return
+        }
+
+        print("🌐 POST \(url.absoluteString)")
+
+        let payload = ["id": id]
+//        let headers: HTTPHeaders = [
+//            "x-access-token": "dev-user-1",
+//            "Content-Type": "application/json"
+//        ]
+
+        AF.request(url, method: .post, parameters: payload, encoding: JSONEncoding.default, headers: headers)
+          .responseData { response in
+            let status = response.response?.statusCode
+            print("🔎 HTTP status:", status.map(String.init) ?? "nil")
+
+            switch response.result {
+            case .success(let data):
+                guard let code = status else {
+                    completion(.failure(NSError(domain: "NoStatus", code: -1)))
+                    return
+                }
+                switch code {
+                case 200...299:
+                    // verify {"ok":true}
+                    if let ok = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
+                       (ok["ok"] as? Bool) == true {
+                        print("✅ Deleted note:", id)
+                        completion(.success(()))
+                    } else {
+                        // Treat any 2xx as success if backend sometimes returns 204
+                        completion(.success(()))
+                    }
+                default:
+                    let body = String(data: data, encoding: .utf8) ?? ""
+                    print("💥 Error \(code):", body)
+                    completion(.failure(NSError(domain: "HTTP", code: code, userInfo: ["body": body])))
+                }
+
+            case .failure(let error):
+                print("🌐 Network error:", error.localizedDescription)
+                completion(.failure(error))
+            }
+          }
+    }
     
     // MARK: - Image Picker
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

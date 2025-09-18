@@ -17,8 +17,8 @@ class AddNoteScreenView: UIView {
     // button to save current note
     var saveButton: UIButton!
     
-    // button to share current note
-    var shareButton: UIButton!
+    // button to more current note - including share & delete logic
+    var moreButton: UIButton!
     
     // button to attach items such as images, files, audio
     var attachButton: UIButton!
@@ -43,7 +43,7 @@ class AddNoteScreenView: UIView {
            setupNoteBody()
            setupAttachedImages()
            setupSaveButton()
-           setupShareButton()
+           setupMoreButton()
            setupAttachButton()
            setupFilesTableView()
 
@@ -58,17 +58,17 @@ class AddNoteScreenView: UIView {
     
     
     // MARK: Setup Share Button
-   func setupShareButton() {
-       shareButton = UIButton(type: .system)
+   func setupMoreButton() {
+       moreButton = UIButton(type: .system)
        // Use SF Symbol as button icon
-       let image = UIImage(systemName: "square.and.arrow.up")
-       shareButton.setImage(image, for: .normal)
+       let image = UIImage(systemName: "ellipsis.circle")
+       moreButton.setImage(image, for: .normal)
      
-       shareButton.tintColor = .systemPink
-       //shareButton.setTitleColor(.systemPink, for: .normal)
-       shareButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 28)
-       shareButton.translatesAutoresizingMaskIntoConstraints = false
-       self.addSubview(shareButton)
+       moreButton.tintColor = .systemPink
+       //moreButton.setTitleColor(.systemPink, for: .normal)
+       moreButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 28)
+       moreButton.translatesAutoresizingMaskIntoConstraints = false
+       self.addSubview(moreButton)
    }
     
     // MARK: Setup Save Button
@@ -170,12 +170,6 @@ class AddNoteScreenView: UIView {
         filesTableView.isScrollEnabled = false // makes it grow with content
         self.addSubview(filesTableView) // Add to view hierarchy
     }
-
-
-    
-    
-    
-    
     
     // MARK: Setting up Constraints
     func initConstraints() {
@@ -189,9 +183,9 @@ class AddNoteScreenView: UIView {
             saveButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 16),
             saveButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 
-            // Share button to the left of Save
-            shareButton.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
-            shareButton.trailingAnchor.constraint(equalTo: saveButton.leadingAnchor, constant: -16),
+            // More button to the left of Save
+            moreButton.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
+            moreButton.trailingAnchor.constraint(equalTo: saveButton.leadingAnchor, constant: -16),
 
             // Body text view below the note title
             noteBody.topAnchor.constraint(equalTo: noteTitle.bottomAnchor, constant: 12),
@@ -209,7 +203,7 @@ class AddNoteScreenView: UIView {
             filesTableView.topAnchor.constraint(equalTo: imagesCollectionView.bottomAnchor, constant: 12),
             filesTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             filesTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
-            filesTableView.heightAnchor.constraint(equalToConstant: 150), // you can adjust this later
+            filesTableView.heightAnchor.constraint(equalToConstant: 150), 
 
             // 📎 Attach button at bottom-right, floating
             attachButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),

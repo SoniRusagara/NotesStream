@@ -26,5 +26,5 @@ struct Note: Codable {
 
 extension Notification.Name {
     static let noteCreated = Notification.Name("noteCreated")
+    static let noteDeleted = Notification.Name("noteDeleted")
 }
-

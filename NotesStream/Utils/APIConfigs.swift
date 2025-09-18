@@ -28,6 +28,6 @@ class APIConfigs {
     // === Notes Endpoints (live on API Gateway) ===
     static var getAllNotes: String { baseNotesURL + "getall" }
     static var addNote:     String { baseNotesURL + "post" }
-    static var deleteNotes: String { baseNotesURL + "delete" }
+    static var deleteNote: String { baseNotesURL + "delete" }
 }
 
