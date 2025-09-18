@@ -1,23 +1,33 @@
 # macOS
 .DS_Store
 
-# Xcode
+# Editors
+.vscode/
+.idea/
+
+# Xcode / iOS
 build/
 DerivedData/
 xcuserdata/
 *.xcuserstate
 *.xcactivitylog
+# Keep workspace tracked, ignore only user data inside it
+*.xcworkspace/xcuserdata/
 
-# Swift Package Manager
+# Swift Package Manager (you can keep Package.resolved tracked)
 .swiftpm/
-Packages/
-# If you prefer to pin deps, remove the next line so Package.resolved is tracked:
-Package.resolved
+.build/
+# If you do NOT want to pin deps, uncomment the next line:
+# Package.resolved
 
-# CocoaPods (if used)
+# CocoaPods
+# Keep the Pods/ directory OUT of git (recommended)
 Pods/
-*.xcworkspace
-# For apps, keep Podfile.lock tracked (do NOT ignore it).
+# DO track these two:
+!Podfile
+!Podfile.lock
+# DO NOT ignore the workspace (CocoaPods generates it)
+!*.xcworkspace
 
 # Carthage (if used)
 Carthage/Build/
@@ -30,8 +40,19 @@ fastlane/screenshots
 # Artifacts / archives
 *.ipa
 *.dSYM.zip
+*.mobileprovision
 
 # Local config / secrets
 Secrets.xcconfig
 *.local.json
 .env
+*.pem
+
+# Backend (AWS SAM / Node) – applies in any subfolder
+**/.aws-sam/
+**/node_modules/
+# Keep backend manifests
+!**/package.json
+!**/package-lock.json
+!**/pnpm-lock.yaml
+!**/yarn.lock
