@@ -5,7 +5,6 @@
 An iOS notes app with an AWS serverless backend. Fast sync, offline-friendly, and instrumented for reliability. 
 **Highlight:** Scaled to **1k+ notes/user** with **<200 ms** sync; **99.9%** consistency in offline control–variant tests.
 
-
 ---
 
 ## Features
