@@ -95,7 +95,7 @@ Future Work: Summarization (Bedrock/OpenAI), auto-tagging, voice notes (S3 + Tra
 
 ## License
 
-MIT (or your preference)
+MIT 
 
 ---
 
